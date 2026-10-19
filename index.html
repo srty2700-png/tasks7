@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>وزارة الداخلية - المهام الخاصة في درعا</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- محرك قراءة الـ QR السريع والمباشر -->
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<!-- مكتبة Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root { 
+    --primary-dark:#071710; --primary-main:#0f261a; --military-green:#113220; --military-green-dark:#0a1f14; 
+    --accent-gold:#c5a859; --accent-gold-hover:#d1b872; --bg-body:#0b2216; --bg-card:#ffffff; 
+    --border-light:#d1dcd4; --text-main:#2c3e33; --text-muted:#61796b; --success:#10b981; --success-bg:#d1fae5; 
+    --danger:#ef4444; --danger-bg:#fee2e2; --transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); --main-font:'Tajawal', sans-serif; --title-font:'Amiri', serif;
+}
+body.light-mode {
+    --bg-body: #f4f6f4; --bg-card: #ffffff; --text-main: #2c3e33; --text-muted: #61796b; --border-light: #d1dcd4;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+body { font-family: var(--main-font); background-color: var(--bg-body); background: linear-gradient(135deg, #071710, #113220); background-attachment: fixed; color: var(--text-main); direction: rtl; font-size: 15px; line-height: 1.6; min-height: 100vh; margin: 0; transition: background 0.4s ease; }
+body.light-mode { background: linear-gradient(135deg, #e2e8f0, #cbd5e1); }
+
+.lucide {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.2px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+.header-action-btn .lucide {
+    width: 17px;
+    height: 17px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scanLaser {
+    0% { top: 10%; opacity: 0.4; }
+    50% { top: 88%; opacity: 1; }
+    100% { top: 10%; opacity: 0.4; }
+}
+
+.login-overlay { position: fixed; inset: 0; z-index: 9999; background: rgba(7, 23, 16, 0.94); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; padding: 15px; animation: fadeIn 0.4s ease; }
+.login-box { background: rgba(255, 255, 255, 0.98); padding: 30px 20px; border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.5); width: 100%; max-width: 380px; text-align: center; border: 2px solid var(--accent-gold); }
+.login-box img { width: 75px; margin-bottom: 10px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15)); }
+.input-control { width: 100%; padding: 12px 14px; border: 1px solid var(--border-light); border-radius: 8px; background: #f8fafc; color: var(--primary-main); font-family: var(--main-font); font-size: 1rem; margin-top: 5px; transition: var(--transition); }
+.input-control:focus { background: #fff; border-color: var(--accent-gold); box-shadow: 0 0 0 3px rgba(197, 168, 89, 0.2); }
+
+.btn { padding: 12px 18px; border: none; border-radius: 8px; font-family: var(--main-font); font-weight: 700; font-size: 0.95rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition); text-decoration: none; width: 100%; position: relative; }
+.btn:active { transform: scale(0.98); }
+.btn-primary { background: var(--military-green); color: #fff; } 
+.btn-gold { background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-hover)); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.1); padding: 14px; font-size: 1.05rem; margin-top: 15px; }
+.btn-secondary { background: #64748b; color: #fff; }
+
+.file-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 13px 18px;
+    border-radius: 8px;
+    font-family: var(--main-font);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+}
+.file-btn-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+.bg-orange { background: #d97706; }
+.bg-blue { background: #2563eb; }
+.bg-green { background: #059669; margin-top: 10px; }
+
+.top-header { background: rgba(7, 23, 16, 0.95); backdrop-filter: blur(12px); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent-gold); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+.header-right-side { display: flex; align-items: center; gap: 8px; }
+.header-titles h1 { font-family: var(--title-font); font-size: 0.95rem; color: var(--accent-gold); line-height: 1.2; text-align: right; } 
+.header-titles h2 { font-size: 0.65rem; color: #d1dcd4; font-weight: 500; text-align: right; }
+
+.header-actions { display: flex; align-items: center; gap: 5px; }
+.header-action-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(197,168,89,0.4); background: rgba(255,255,255,0.05); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: var(--transition); }
+
+.container { max-width: 800px; margin: 15px auto; padding: 0 12px; min-height: 80vh; }
+.card { background: var(--bg-card); border-radius: 16px; padding: 18px; margin-bottom: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1.5px solid var(--border-light); position: relative; overflow: hidden; animation: fadeIn 0.5s ease; }
+.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--military-green), var(--accent-gold), var(--military-green)); }
+
+.section-title { margin-bottom: 14px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px; color: var(--primary-main); font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+.section-title .lucide { color: var(--accent-gold); width: 22px; height: 22px; }
+
+/* تصميم بطاقة السجل مع أزرار التعديل والحذف */
+.record-item { background: linear-gradient(135deg, #f8fafc, #edf2f7); border: 1.5px solid var(--border-light); border-right: 5px solid var(--accent-gold); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; transition: var(--transition); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.record-item:hover { border-color: var(--accent-gold); background: #fff; }
+.record-info { flex: 1; cursor: pointer; }
+.record-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.action-btns-group { display: flex; gap: 5px; }
+.mini-btn { width: 32px; height: 32px; border-radius: 7px; border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); color: #fff; }
+.mini-btn:active { transform: scale(0.92); }
+.mini-btn .lucide { width: 15px; height: 15px; }
+.mini-btn-qr { background: var(--military-green); }
+.mini-btn-edit { background: #2563eb; }
+.mini-btn-del { background: #ef4444; }
+
+.search-wrapper { position: relative; margin-bottom: 12px; }
+.search-wrapper .input-control { padding-right: 40px; margin-top: 0; }
+.search-wrapper .search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+
+/* تصميم شاشة الكاميرا المباشرة */
+#cameraModal {
+    display: none;
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto 14px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #000;
+    border: 2px solid var(--accent-gold);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+#qrVideo {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+}
+.scan-overlay {
+    position: absolute;
+    inset: 0;
+    border: 35px solid rgba(0,0,0,0.45);
+    pointer-events: none;
+}
+.scan-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--accent-gold);
+    border-radius: 8px;
+}
+.scan-laser {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    height: 2px;
+    background: #ef4444;
+    box-shadow: 0 0 8px 2px #ef4444;
+    animation: scanLaser 2s infinite ease-in-out;
+}
+.camera-controls-bar {
+    display: flex;
+    gap: 6px;
+    padding: 8px;
+    background: #0f261a;
+}
+
+#webviewAlert {
+    display: none;
+    background: #fffbeb;
+    border: 1.5px solid #f59e0b;
+    color: #92400e;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    font-size: 0.82rem;
+    text-align: right;
+}
+
+/* تصميم الملصق بعد تصغيره 1 سم في الطول والعرض (200px للملصق و 150px للـ QR) */
+#stickerPrintArea {
+    background: #ffffff;
+    color: #000000;
+    padding: 10px;
+    border-radius: 8px;
+    width: 200px;
+    margin: 12px auto;
+    border: 2px solid #000000;
+    text-align: center;
+}
+#qrCanvasContainer {
+    background: #ffffff;
+    padding: 8px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2px 0;
+}
+#qrCanvasContainer img, #qrCanvasContainer canvas {
+    margin: 0 auto;
+    display: block;
+    width: 150px !important;
+    height: 150px !important;
+    image-rendering: pixelated;
+}
+
+#toastContainer { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 350px; pointer-events: none; }
+.toast { background: rgba(16, 185, 129, 0.95); color: #fff; padding: 12px 20px; border-radius: 10px; font-weight: bold; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; font-size: 0.92rem; animation: fadeIn 0.3s ease; }
+
+/* إعدادات الطباعة بعد تصغير 1 سم طول و 1 سم عرض (عرض الملصق 4.5 سم، والـ QR داخله 3 سم × 3 سم) */
+@media print {
+    @page { margin: 0; size: auto; }
+    body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+    body * { visibility: hidden !important; }
+    #stickerPrintArea, #stickerPrintArea * { visibility: visible !important; }
+    #stickerPrintArea {
+        position: fixed !important;
+        right: 5mm !important;
+        top: 5mm !important;
+        width: 45mm !important;
+        max-width: 45mm !important;
+        padding: 2.5mm !important;
+        margin: 0 !important;
+        border: 1.5px solid #000 !important;
+        border-radius: 4px !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+    }
+    #stickerPrintArea .stk-header { font-size: 7.5pt !important; margin-bottom: 1mm !important; padding-bottom: 1mm !important; }
+    #qrCanvasContainer { padding: 1.5mm !important; }
+    #qrCanvasContainer img, #qrCanvasContainer canvas { width: 30mm !important; height: 30mm !important; }
+    #stickerPrintArea .stk-footer { font-size: 7pt !important; line-height: 1.25 !important; margin-top: 1mm !important; padding-top: 1mm !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="toastContainer"></div>
+
+<div id="loginOverlay" class="login-overlay">
+    <div class="login-box">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Emblem_of_Syria_%282025%E2%80%93present%29.svg" alt="الشعار">
+        <h2>فرع المهام الخاصة</h2>
+        <p style="color:var(--text-muted); margin-bottom:15px; font-size:0.85rem;">المهام الخاصة - درعا</p>
+        <form onsubmit="event.preventDefault(); handleLogin();">
+            <div style="text-align:right; margin-bottom:12px;"><label style="font-size:0.85rem; font-weight:bold;">اسم المستخدم</label><input type="text" id="loginUser" class="input-control" value="قسم التسليح"></div>
+            <div style="text-align:right; margin-bottom:15px;"><label style="font-size:0.85rem; font-weight:bold;">كلمة المرور</label><input type="password" id="loginPass" class="input-control" value="2026"></div>
+            <button type="submit" class="btn btn-gold"><i data-lucide="log-in"></i> تسجيل الدخول</button>
+        </form>
+    </div>
+</div>
+
+<header class="top-header">
+    <div class="header-right-side">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Emblem_of_Syria_%282025%E2%80%93present%29.svg" style="width:32px; filter:drop-shadow(0 2px 5px rgba(197,168,89,0.5));">
+        <div class="header-titles"><h1>قسم التسليح والمهمات</h1><h2>المهام الخاصة</h2></div>
+    </div>
+    <div class="header-actions">
+        <button class="header-action-btn" onclick="exportToExcel()" title="تصدير إكسل"><i data-lucide="file-spreadsheet"></i></button>
+        <button class="header-action-btn" onclick="window.print()" title="طباعة"><i data-lucide="printer"></i></button>
+        <button class="header-action-btn" onclick="toggleFullScreen()" title="تكبير"><i data-lucide="maximize"></i></button>
+        <button class="header-action-btn" id="themeBtn" onclick="toggleDarkMode()" title="نهاري/ليلي"><i data-lucide="moon"></i></button>
+        <button class="header-action-btn" onclick="handleLogout()" title="خروج" style="background:rgba(239,68,68,0.25); color:#fca5a5;"><i data-lucide="log-out"></i></button>
+    </div>
+</header>
+
+<div class="container">
+
+    <div id="webviewAlert">
+        <div style="font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:5px;">
+            <i data-lucide="alert-circle" style="width:18px; height:18px; color:#d97706;"></i> ملاحظة لتشغيل الكاميرا بأقصى سرعة:
+        </div>
+        أنت تفتح الرابط من داخل تطبيق مراسلة. إذا لم تفتح معك الكاميرا، اضغط على الزر أدناه لفتح المنظومة في متصفح <b>Chrome</b> مباشرة:
+        <button onclick="openInChrome()" class="btn" style="background:#d97706; color:#fff; margin-top:8px; padding:8px; font-size:0.85rem;">
+            <i data-lucide="external-link"></i> فتح في متصفح Chrome الرسمي
+        </button>
+    </div>
+
+    <div class="card" id="formCard">
+        <h3 class="section-title" id="formTitle"><i data-lucide="shield-plus"></i> إصدار لصقة سلاح جديدة مشفرة</h3>
+        <div class="form-group" style="text-align:right; margin-bottom:12px;"><label style="font-size:0.85rem;">الاسم الثلاثي *</label><input type="text" id="fName" class="input-control" placeholder="...."></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+            <div style="text-align:right;"><label style="font-size:0.85rem;">نوع السلاح *</label><input type="text" id="fType" class="input-control" placeholder="...."></div>
+            <div style="text-align:right;"><label style="font-size:0.85rem;">عدد المخازن *</label><input type="number" id="fMags" class="input-control" value="...."></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+            <div style="text-align:right;"><label style="font-size:0.85rem;">رقم السلاح *</label><input type="text" id="fWpnNum" class="input-control" placeholder="...."></div>
+            <div style="text-align:right;"><label style="font-size:0.85rem;">رقم الهيكل *</label><input type="text" id="fChassis" class="input-control" placeholder="...."></div>
+        </div>
+        <div class="form-group" style="text-align:right; margin-bottom:20px;"><label style="font-size:0.85rem;">تاريخ الاستلام *</label><input type="date" id="fDate" class="input-control"></div>
+        
+        <button id="saveBtn" class="btn btn-gold" style="margin-top:0;" onclick="createWeaponQR()"><i data-lucide="qr-code"></i> توليد وحفظ الـ QR المشفر</button>
+        <button id="cancelEditBtn" class="btn btn-secondary" style="margin-top:8px; display:none;" onclick="cancelEditMode()"><i data-lucide="x"></i> إلغاء التعديل</button>
+    </div>
+
+    <!-- قسم الملصق المضبوط بحجم 3 سم × 3 سم للـ QR -->
+    <div id="stickerSection" class="card" style="display:none; text-align:center;">
+        <h3 class="section-title" style="justify-content:center;"><i data-lucide="tag"></i> الملصق الجاهز للطباعة والمسح السريع</h3>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">مضبوط بمقاس (3 سم × 3 سم للـ QR) مع تشفير مضغوط لسرعة القراءة</p>
+        
+        <div id="stickerPrintArea">
+            <div class="stk-header" style="font-weight:900; border-bottom:1.5px solid #000; padding-bottom:3px; margin-bottom:5px; font-size:0.8rem;">المهام الخاصة - التسليح</div>
+            <div id="qrCanvasContainer"></div>
+            <div class="stk-footer" style="font-size:0.75rem; font-weight:800; border-top:1.5px dashed #000; padding-top:3px; margin-top:3px; line-height:1.3;">
+                <div id="stkName" style="color:#000; font-weight:900;">الاسم الثلاثي</div>
+                <div id="stkType">نوع السلاح</div>
+                <div id="stkNum" style="font-size:0.7rem;">SN: ---</div>
+            </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+            <button class="btn btn-primary" onclick="window.print()"><i data-lucide="printer"></i> طباعة الملصق</button>
+            <button class="btn btn-secondary" onclick="downloadStickerImage()"><i data-lucide="download"></i> حفظ الملصق كصورة في المعرض</button>
+        </div>
+    </div>
+
+    <!-- قسم فحص ومطابقة الأسلحة -->
+    <div class="card">
+        <h3 class="section-title"><i data-lucide="scan-line"></i> فحص ومطابقة الأسلحة</h3>
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">وجه الكاميرا نحو الكود ليتم قراءته تلقائياً، أو التقط صورة، أو اختر من الاستوديو:</p>
+        
+        <div id="cameraModal">
+            <video id="qrVideo" playsinline muted autoplay></video>
+            <div class="scan-overlay">
+                <div class="scan-frame">
+                    <div class="scan-laser"></div>
+                </div>
+            </div>
+            <div class="camera-controls-bar">
+                <button class="btn" style="background:var(--accent-gold); color:#000; padding:8px; font-size:0.82rem; flex:1;" onclick="captureStillFromVideo()">
+                    <i data-lucide="aperture"></i> لقطة فورية
+                </button>
+                <button class="btn" id="torchBtn" style="background:rgba(255,255,255,0.15); color:#fff; padding:8px; font-size:0.82rem; display:none; width:auto;" onclick="toggleTorch()">
+                    <i data-lucide="flashlight"></i> الفلاش
+                </button>
+                <button class="btn" style="background:#ef4444; color:#fff; padding:8px; font-size:0.82rem; width:auto;" onclick="stopNativeCamera()">
+                    <i data-lucide="x"></i> إغلاق
+                </button>
+            </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+            <button class="btn btn-primary" onclick="startNativeCamera()">
+                <i data-lucide="video"></i> فتح الكاميرا المباشرة 
+            </button>
+            
+            <div class="file-btn-wrapper bg-orange">
+                <i data-lucide="camera"></i>
+                <span>تصوير الكود بكاميرا الهاتف الأصلية</span>
+                <input type="file" accept="image/*" capture="environment" onchange="handleImageFile(this)">
+            </div>
+
+            <div class="file-btn-wrapper bg-blue">
+                <i data-lucide="image"></i>
+                <span>اختيار صورة QR من المعرض </span>
+                <input type="file" accept="image/*" onchange="handleImageFile(this)">
+            </div>
+        </div>
+
+        <div id="verifiedResult" style="background:var(--success-bg); color:var(--success); padding:15px; border-radius:12px; margin-top:15px; display:none; border:1px solid var(--success); text-align:right; animation: fadeIn 0.4s ease;">
+            <h4 style="color:var(--success); margin-bottom:8px; font-size:1rem; display:flex; align-items:center; gap:6px;"><i data-lucide="check-circle-2"></i> تم التعرف على السلاح بنجاح</h4>
+            <p style="font-size:0.9rem;"><strong>الاسم الثلاثي:</strong> <span id="resName">---</span></p>
+            <p style="font-size:0.9rem;"><strong>نوع السلاح:</strong> <span id="resType">---</span></p>
+            <p style="font-size:0.9rem;"><strong>رقم السلاح والهيكل:</strong> <span id="resWpnNum">---</span> / <span id="resChassis">---</span></p>
+            <p style="font-size:0.9rem;"><strong>المخازن والتاريخ:</strong> <span id="resMags">---</span> مخازن - تاريخ: <span id="resDate">---</span></p>
+        </div>
+        <div id="errorResult" style="background:var(--danger-bg); color:var(--danger); padding:15px; border-radius:12px; margin-top:15px; display:none; border:1px solid var(--danger); text-align:right; animation: fadeIn 0.4s ease;">
+            <h4 style="color:var(--danger); font-size:0.95rem; display:flex; align-items:center; gap:6px;"><i data-lucide="alert-triangle"></i> تحذير أمني: كود غير صادر عن المنظومة!</h4>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 class="section-title"><i data-lucide="database"></i> سجل الأسلحة  (<span id="dbCount">0</span>)</h3>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:10px; display:flex; align-items:center; gap:5px;"><i data-lucide="info" style="width:15px; height:15px; color:var(--accent-gold);"></i> يمكنك عرض الـ QR أو تعديل البيانات أو حذف أي سجل مباشرة:</p>
+        
+        <div class="search-wrapper">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="searchBox" class="input-control" placeholder="ابحث بالاسم أو رقم السلاح أو الهيكل..." oninput="renderDatabaseRecords()">
+        </div>
+        
+        <div id="dbRecordsList" style="max-height:320px; overflow-y:auto;"></div>
+        
+        <button class="btn btn-gold" style="margin-top:15px;" onclick="exportToExcel()"><i data-lucide="file-down"></i> تصدير كامل السجل لملف Excel</button>
+        
+        <div class="file-btn-wrapper bg-green">
+            <i data-lucide="file-up"></i>
+            <span>استيراد سجل الأسلحة من ملف Excel</span>
+            <input type="file" accept=".xlsx, .xls" onchange="importFromExcel(this)">
+        </div>
+    </div>
+</div>
+
+<script>
+const SECRET_KEY = "ARM_SEC_KEY_99";
+const STORAGE_KEY = "ARMORY_LOCAL_DB";
+
+let editingIndex = -1; // لتحديد السجل قيد التعديل
+let videoStream = null;
+let isScanningLive = false;
+let scanAnimationFrame = null;
+let torchEnabled = false;
+const scanCanvas = document.createElement("canvas");
+const scanCtx = scanCanvas.getContext("2d", { willReadFrequently: true });
+
+window.onload = function() {
+    document.getElementById('fDate').valueAsDate = new Date();
+    if(localStorage.getItem('active_system_user_siiss_v14')) {
+        document.getElementById('loginOverlay').style.display = 'none';
+    }
+    checkIfInAppWebView();
+    renderDatabaseRecords();
+    lucide.createIcons();
+};
+
+function checkIfInAppWebView() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    const isWebView = /FBAN|FBAV|Instagram|Telegram|WhatsApp|Line|wv/i.test(ua);
+    if (isWebView) {
+        document.getElementById('webviewAlert').style.display = 'block';
+    }
+}
+
+function openInChrome() {
+    const url = window.location.href.replace(/^https?:\/\//, '');
+    window.location.href = `intent://${url}#Intent;scheme=https;package=com.android.chrome;end`;
+}
+
+function handleLogin() {
+    document.getElementById('loginOverlay').style.display = 'none';
+    localStorage.setItem('active_system_user_siiss_v14', JSON.stringify({Role: 'admin'}));
+    showToast("تم تسجيل الدخول بنجاح");
+}
+function handleLogout() {
+    localStorage.removeItem('active_system_user_siiss_v14');
+    document.getElementById('loginOverlay').style.display = 'flex';
+}
+function toggleDarkMode() {
+    const isLight = document.body.classList.toggle('light-mode');
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.innerHTML = isLight ? '<i data-lucide="sun"></i>' : '<i data-lucide="moon"></i>';
+    lucide.createIcons();
+    showToast(isLight ? "تم تفعيل الوضع النهاري" : "تم تفعيل الوضع الليلي");
+}
+function toggleFullScreen() {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+    else if(document.exitFullscreen) document.exitFullscreen();
+}
+function showToast(msg, isError = false) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    if(isError) toast.style.background = "rgba(239, 68, 68, 0.95)";
+    toast.innerText = msg;
+    container.appendChild(toast);
+    setTimeout(()=>toast.remove(), 3500);
+}
+
+// تشفير مضغوط فائق الكفاءة
+function encryptPayload(dataObj) {
+    const compactStr = [dataObj.n, dataObj.t, dataObj.m, dataObj.w, dataObj.c, dataObj.d].join("|");
+    const utf8Bytes = new TextEncoder().encode(compactStr);
+    let xored = '';
+    for (let i = 0; i < utf8Bytes.length; i++) {
+        const byte = utf8Bytes[i] ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length);
+        xored += String.fromCharCode(byte);
+    }
+    return "S2#" + btoa(xored);
+}
+
+// فك التشفير (يدعم الأكواد الجديدة S2# والقديمة SEC#)
+function decryptPayload(cipherText) {
+    try {
+        if (!cipherText) return null;
+        cipherText = cipherText.trim();
+
+        if (cipherText.startsWith("S2#")) {
+            const rawBase64 = cipherText.substring(3);
+            const xored = atob(rawBase64);
+            const bytes = new Uint8Array(xored.length);
+            for (let i = 0; i < xored.length; i++) {
+                bytes[i] = xored.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length);
+            }
+            const decodedStr = new TextDecoder().decode(bytes);
+            const parts = decodedStr.split("|");
+            if (parts.length < 6) return null;
+            return { n: parts[0], t: parts[1], m: parts[2], w: parts[3], c: parts[4], d: parts[5] };
+        }
+
+        if (cipherText.startsWith("SEC#")) {
+            const rawBase64 = cipherText.substring(4);
+            const xored = atob(rawBase64);
+            let utf8Bytes = '';
+            for (let i = 0; i < xored.length; i++) {
+                const charCode = xored.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length);
+                utf8Bytes += String.fromCharCode(charCode);
+            }
+            return JSON.parse(decodeURIComponent(utf8Bytes));
+        }
+
+        return null;
+    } catch (e) { return null; }
+}
+
+// حفظ سلاح جديد أو حفظ التعديلات على سلاح موجود
+function createWeaponQR() {
+    const name = document.getElementById('fName').value.trim();
+    const type = document.getElementById('fType').value.trim();
+    const mags = document.getElementById('fMags').value.trim() || "4";
+    const wpnNum = document.getElementById('fWpnNum').value.trim();
+    const chassis = document.getElementById('fChassis').value.trim();
+    const date = document.getElementById('fDate').value;
+
+    if (!name || !type || !wpnNum || !chassis) return showToast("الرجاء تعبئة الحقول الأساسية!", true);
+
+    const weaponObj = { n: name, t: type, m: mags, w: wpnNum, c: chassis, d: date };
+    let db = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+    if (editingIndex > -1 && editingIndex < db.length) {
+        // تحديث السجل الحالي
+        db[editingIndex] = weaponObj;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+        cancelEditMode();
+        renderDatabaseRecords();
+        generateSticker(weaponObj);
+        showToast("✔ تم حفظ التعديلات وتحديث الـ QR بنجاح");
+    } else {
+        // إضافة سجل جديد
+        db.unshift(weaponObj);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+        clearFormInputs();
+        renderDatabaseRecords();
+        generateSticker(weaponObj);
+        showToast("تم توليد وحفظ السجل بنجاح");
+    }
+}
+
+function clearFormInputs() {
+    document.getElementById('fName').value = '';
+    document.getElementById('fType').value = '';
+    document.getElementById('fMags').value = '4';
+    document.getElementById('fWpnNum').value = '';
+    document.getElementById('fChassis').value = '';
+    document.getElementById('fDate').valueAsDate = new Date();
+}
+
+// تفعيل وضع تعديل بيانات سجل معين
+function startEditRecord(index) {
+    const db = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    const item = db[index];
+    if (!item) return;
+
+    editingIndex = index;
+    document.getElementById('fName').value = item.n;
+    document.getElementById('fType').value = item.t;
+    document.getElementById('fMags').value = item.m;
+    document.getElementById('fWpnNum').value = item.w;
+    document.getElementById('fChassis').value = item.c;
+    document.getElementById('fDate').value = item.d;
+
+    document.getElementById('formTitle').innerHTML = `<i data-lucide="edit-3"></i> تعديل بيانات سلاح: ${item.n}`;
+    document.getElementById('saveBtn').innerHTML = `<i data-lucide="check"></i> حفظ التعديلات وتحديث الـ QR`;
+    document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+    lucide.createIcons();
+
+    window.scrollTo({ top: document.getElementById('formCard').offsetTop - 60, behavior: 'smooth' });
+    showToast("عدّل البيانات ثم اضغط (حفظ التعديلات)");
+}
+
+function cancelEditMode() {
+    editingIndex = -1;
+    clearFormInputs();
+    document.getElementById('formTitle').innerHTML = `<i data-lucide="shield-plus"></i> إصدار QR للسلاح `;
+    document.getElementById('saveBtn').innerHTML = `<i data-lucide="qr-code"></i> توليد وحفظ الـ QR المشفر`;
+    document.getElementById('cancelEditBtn').style.display = 'none';
+    lucide.createIcons();
+}
+
+// حذف سجل من القائمة
+function deleteRecord(index) {
+    const db = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    const item = db[index];
+    if (!item) return;
+
+    if (!confirm(`هل أنت متأكد من حذف سجل السلاح الخاص بـ (${item.n})؟`)) return;
+
+    db.splice(index, 1);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+
+    if (editingIndex === index) cancelEditMode();
+    else if (editingIndex > index) editingIndex--;
+
+    renderDatabaseRecords();
+    showToast("تم حذف السجل بنجاح");
+}
+
+function generateSticker(item) {
+    const weaponObj = { n: item.n, t: item.t, m: item.m, w: item.w, c: item.c, d: item.d };
+    const encryptedText = encryptPayload(weaponObj);
+
+    const qrBox = document.getElementById('qrCanvasContainer');
+    qrBox.innerHTML = '';
+    // حجم 150x150 (أصغر بـ 1 سم عن النسخة السابقة مع الحفاظ على دقة المربعات)
+    new QRCode(qrBox, { 
+        text: encryptedText, 
+        width: 150, 
+        height: 150, 
+        colorDark: "#000000", 
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.L
+    });
+
+    document.getElementById('stkName').textContent = item.n;
+    document.getElementById('stkType').textContent = item.t;
+    document.getElementById('stkNum').textContent = `سلاح:${item.w} | هيكل:${item.c}`;
+    document.getElementById('stickerSection').style.display = 'block';
+    window.scrollTo({top: document.getElementById('stickerSection').offsetTop - 40, behavior: 'smooth'});
+}
+
+function downloadStickerImage() {
+    const stickerElement = document.getElementById('stickerPrintArea');
+    html2canvas(stickerElement, { scale: 3, backgroundColor: "#ffffff" }).then(canvas => {
+        const paddedCanvas = document.createElement('canvas');
+        const pad = 50;
+        paddedCanvas.width = canvas.width + pad * 2;
+        paddedCanvas.height = canvas.height + pad * 2;
+        const ctx = paddedCanvas.getContext('2d');
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, paddedCanvas.width, paddedCanvas.height);
+        ctx.drawImage(canvas, pad, pad);
+
+        const link = document.createElement('a');
+        link.download = `QR_${document.getElementById('stkName').textContent}.png`;
+        link.href = paddedCanvas.toDataURL('image/png');
+        link.click();
+        showToast("تم حفظ الملصق في المعرض بنجاح");
+    });
+}
+
+function handleScannedText(decodedText) {
+    const data = decryptPayload(decodedText);
+    const verifiedBox = document.getElementById('verifiedResult');
+    const errorBox = document.getElementById('errorResult');
+
+    if (!data) {
+        verifiedBox.style.display = 'none';
+        errorBox.style.display = 'block';
+        lucide.createIcons();
+        showToast("كود غير صادر عن المنظومة!", true);
+        return;
+    }
+
+    errorBox.style.display = 'none';
+    document.getElementById('resName').textContent = data.n;
+    document.getElementById('resType').textContent = data.t;
+    document.getElementById('resWpnNum').textContent = data.w;
+    document.getElementById('resChassis').textContent = data.c;
+    document.getElementById('resMags').textContent = data.m;
+    document.getElementById('resDate').textContent = data.d;
+    verifiedBox.style.display = 'block';
+    lucide.createIcons();
+    
+    if (navigator.vibrate) navigator.vibrate(150);
+    showToast("✔ تمت مطابقة السلاح بنجاح");
+}
+
+async function startNativeCamera() {
+    stopNativeCamera();
+    const modal = document.getElementById('cameraModal');
+    const video = document.getElementById('qrVideo');
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        document.getElementById('webviewAlert').style.display = 'block';
+        showToast("هذا المتصفح يمنع الكاميرا، اضغط على (فتح في متصفح Chrome) أعلى الصفحة أو استخدم الزر الأزرق", true);
+        return;
+    }
+
+    try {
+        videoStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: { ideal: "environment" },
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false
+        });
+
+        video.srcObject = videoStream;
+        await video.play();
+        modal.style.display = 'block';
+        isScanningLive = true;
+
+        const track = videoStream.getVideoTracks()[0];
+        const capabilities = track.getCapabilities ? track.getCapabilities() : {};
+        if (capabilities.torch) {
+            document.getElementById('torchBtn').style.display = 'inline-flex';
+        }
+
+        showToast("الكاميرا تعمل الآن، وجهها نحو الـ QR");
+        requestAnimationFrame(tickScanFrame);
+
+    } catch (err) {
+        modal.style.display = 'none';
+        document.getElementById('webviewAlert').style.display = 'block';
+        showToast("تعذر الوصول للكاميرا! افتح الرابط في متصفح Chrome أو استخدم زر المعرض الأزرق", true);
+    }
+}
+
+async function toggleTorch() {
+    if (!videoStream) return;
+    const track = videoStream.getVideoTracks()[0];
+    try {
+        torchEnabled = !torchEnabled;
+        await track.applyConstraints({ advanced: [{ torch: torchEnabled }] });
+    } catch (e) {
+        showToast("تعذر تشغيل الفلاش", true);
+    }
+}
+
+async function tickScanFrame() {
+    if (!isScanningLive) return;
+    const video = document.getElementById('qrVideo');
+
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        if ('BarcodeDetector' in window) {
+            try {
+                const detector = new BarcodeDetector({ formats: ['qr_code'] });
+                const barcodes = await detector.detect(video);
+                if (barcodes.length > 0 && barcodes[0].rawValue) {
+                    handleScannedText(barcodes[0].rawValue);
+                    await new Promise(r => setTimeout(r, 1200));
+                }
+            } catch (e) {}
+        }
+
+        scanCanvas.width = video.videoWidth;
+        scanCanvas.height = video.videoHeight;
+        scanCtx.drawImage(video, 0, 0, scanCanvas.width, scanCanvas.height);
+        const imageData = scanCtx.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: "attemptBoth" });
+
+        if (code && code.data) {
+            handleScannedText(code.data);
+            await new Promise(r => setTimeout(r, 1200));
+        }
+    }
+
+    if (isScanningLive) {
+        scanAnimationFrame = requestAnimationFrame(tickScanFrame);
+    }
+}
+
+function captureStillFromVideo() {
+    const video = document.getElementById('qrVideo');
+    if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) return;
+
+    scanCanvas.width = video.videoWidth;
+    scanCanvas.height = video.videoHeight;
+    scanCtx.drawImage(video, 0, 0, scanCanvas.width, scanCanvas.height);
+    
+    const imageData = scanCtx.getImageData(0, 0, scanCanvas.width, scanCanvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: "attemptBoth" });
+
+    if (code && code.data) {
+        handleScannedText(code.data);
+    } else {
+        showToast("لم يظهر الكود بوضوح، قرّب الهاتف قليلاً وحاول مجدداً", true);
+    }
+}
+
+function stopNativeCamera() {
+    isScanningLive = false;
+    if (scanAnimationFrame) cancelAnimationFrame(scanAnimationFrame);
+    if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        videoStream = null;
+    }
+    document.getElementById('cameraModal').style.display = 'none';
+    document.getElementById('torchBtn').style.display = 'none';
+    torchEnabled = false;
+}
+
+async function handleImageFile(input) {
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    stopNativeCamera();
+    showToast("جاري فحص الصورة وفك التشفير...");
+
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+
+    img.onload = async function() {
+        URL.revokeObjectURL(url);
+
+        if ('BarcodeDetector' in window) {
+            try {
+                const detector = new BarcodeDetector({ formats: ['qr_code'] });
+                const barcodes = await detector.detect(img);
+                if (barcodes.length > 0 && barcodes[0].rawValue) {
+                    handleScannedText(barcodes[0].rawValue);
+                    input.value = "";
+                    return;
+                }
+            } catch (e) {}
+        }
+
+        const sizes = [1000, 1400, 700, 500, 1800];
+        for (let sz of sizes) {
+            let decoded = decodeImgWithJsQR(img, sz, false, false);
+            if (decoded) { handleScannedText(decoded); input.value = ""; return; }
+            
+            decoded = decodeImgWithJsQR(img, sz, true, false);
+            if (decoded) { handleScannedText(decoded); input.value = ""; return; }
+
+            decoded = decodeImgWithJsQR(img, sz, false, true);
+            if (decoded) { handleScannedText(decoded); input.value = ""; return; }
+        }
+
+        showToast("لم يتم العثور على كود QR واضح! يرجى تقريب الكاميرا من الكود", true);
+        input.value = "";
+    };
+
+    img.onerror = function() {
+        showToast("تعذر قراءة ملف الصورة", true);
+        input.value = "";
+    };
+
+    img.src = url;
+}
+
+function decodeImgWithJsQR(img, maxDim, applyHighContrast, cropCenter) {
+    let sx = 0, sy = 0, sw = img.width, sh = img.height;
+    if (cropCenter) {
+        sx = Math.round(img.width * 0.2);
+        sy = Math.round(img.height * 0.2);
+        sw = Math.round(img.width * 0.6);
+        sh = Math.round(img.height * 0.6);
+    }
+
+    let w = sw;
+    let h = sh;
+    if (w > maxDim || h > maxDim) {
+        if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+        else { w = Math.round((w * maxDim) / h); h = maxDim; }
+    }
+
+    const pad = 50;
+    const canvas = document.createElement('canvas');
+    canvas.width = w + pad * 2;
+    canvas.height = h + pad * 2;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, sx, sy, sw, sh, pad, pad, w, h);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+    if (applyHighContrast) {
+        const d = imageData.data;
+        for (let i = 0; i < d.length; i += 4) {
+            const avg = (d[i] + d[i + 1] + d[i + 2]) / 3;
+            const val = avg < 135 ? 0 : 255;
+            d[i] = d[i + 1] = d[i + 2] = val;
+        }
+    }
+
+    const res = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: "attemptBoth" });
+    return (res && res.data) ? res.data : null;
+}
+
+function importFromExcel(input) {
+    if (input.files.length === 0) return;
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+
+            if (jsonRows.length === 0) {
+                showToast("ملف الإكسل فارغ!", true);
+                return;
+            }
+
+            let db = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            let importedCount = 0;
+
+            jsonRows.forEach(row => {
+                const name = row["الاسم الثلاثي"] || row["n"];
+                const type = row["نوع السلاح"] || row["t"];
+                const mags = row["عدد المخازن"] || row["m"] || "4";
+                const wpnNum = row["رقم السلاح"] || row["w"];
+                const chassis = row["رقم الهيكل"] || row["c"];
+                const date = row["تاريخ الاستلام"] || row["d"] || new Date().toISOString().slice(0,10);
+
+                if (name && wpnNum) {
+                    db.unshift({ n: String(name), t: String(type || "غير محدد"), m: String(mags), w: String(wpnNum), c: String(chassis || "---"), d: String(date) });
+                    importedCount++;
+                }
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+            renderDatabaseRecords();
+            showToast(`تم استيراد ${importedCount} سجل بنجاح!`);
+        } catch (err) {
+            showToast("خطأ في قراءة ملف الإكسل!", true);
+        }
+        input.value = "";
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+// عرض السجلات مع الاحتفاظ بالرقم الفعلي لكل سجل (originalIndex) ليعمل التعديل والحذف بدقة حتى أثناء البحث
+function renderDatabaseRecords() {
+    const db = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    document.getElementById('dbCount').textContent = db.length;
+    const query = document.getElementById('searchBox') ? document.getElementById('searchBox').value.toLowerCase().trim() : "";
+    const listDiv = document.getElementById('dbRecordsList');
+    listDiv.innerHTML = "";
+
+    const indexedDb = db.map((item, idx) => ({ item, originalIndex: idx }));
+    const filtered = indexedDb.filter(entry => 
+        String(entry.item.n).toLowerCase().includes(query) || 
+        String(entry.item.w).toLowerCase().includes(query) || 
+        String(entry.item.c).toLowerCase().includes(query)
+    );
+
+    if(filtered.length === 0) {
+        listDiv.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:0.85rem; padding:10px;">لا توجد سجلات مطابقة</p>`;
+        return;
+    }
+
+    filtered.forEach(({ item, originalIndex }) => {
+        const div = document.createElement('div');
+        div.className = 'record-item';
+        div.innerHTML = `
+            <div class="record-info" onclick="generateStickerByIndex(${originalIndex})">
+                <strong style="font-size:0.95rem; color:var(--primary-main); display:flex; align-items:center; gap:6px;">
+                    <i data-lucide="qr-code" style="color:var(--accent-gold); width:18px; height:18px;"></i> ${item.n}
+                </strong>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+                    ${item.t} | مخازن: ${item.m} | سلاح: ${item.w} | هيكل: ${item.c}
+                </div>
+            </div>
+            <div class="record-actions">
+                <span style="font-size:0.68rem; background:var(--military-green); color:#fff; padding:2px 6px; border-radius:4px;">${item.d}</span>
+                <div class="action-btns-group">
+                    <button class="mini-btn mini-btn-qr" onclick="generateStickerByIndex(${originalIndex})" title="عرض الـ QR"><i data-lucide="eye"></i></button>
+                    <button class="mini-btn mini-btn-edit" onclick="startEditRecord(${originalIndex})" title="تعديل البيانات"><i data-lucide="pencil"></i></button>
+                    <button class="mini-btn mini-btn-del" onclick="deleteRecord(${originalIndex})" title="حذف السجل"><i data-lucide="trash-2"></i></button>
+                </div>
+            </div>
+        `;
+        listDiv.appendChild(div);
+    });
+    lucide.createIcons();
+}
+
+function generateStickerByIndex(index) {
+    const db = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    if (db[index]) generateSticker(db[index]);
+}
+
+function exportToExcel() {
+    const db = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    if (db.length === 0) return alert("لا توجد سجلات محفوظة حالياً لتصديرها!");
+
+    let data = db.map(item => ({
+        "الاسم الثلاثي": item.n,
+        "نوع السلاح": item.t,
+        "عدد المخازن": item.m,
+        "رقم السلاح": item.w,
+        "رقم الهيكل": item.c,
+        "تاريخ الاستلام": item.d
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "سجل الأسلحة والعهدة");
+    XLSX.writeFile(wb, `سجل_التسليح_${new Date().toISOString().slice(0,10)}.xlsx`);
+    showToast("تم تصدير ملف الإكسل بنجاح");
+}
+</script>
+</body>
+</html>
